@@ -1,9 +1,10 @@
 var x=0, y=485;
-var score=0,highestScore=0;
+var d=0,e;
+var score=0,scoreCoins=0;
 var minHeight=100;
 var maxHeight=200;
-var minWidth=40;
-var maxWidth=80;
+var minWidth=100;
+var maxWidth=110;
 var minGap=300;
 var maxGap=600;
 var speedY=0;
@@ -11,14 +12,12 @@ var gap = RandomGap();
 var x_velocity=0;
 var y_velocity=0;
 var loop;
-var jumping=false;
-var xpos=0;
+var flag=true, jumping=false,m=true,z=true;
 
 var myObstacles=[];
 
 function startGame() {
     gameArea.start();
-    // setInterval(bkmove,5);
 }       
 
 function everyinterval(n) {
@@ -42,8 +41,11 @@ function obstacle() {
         gameArea.context.fillStyle = "green";
         img2 = new Image();
         img2.src="../images/tile.png"
-        gameArea.context.drawImage(img2,384,16,16,16,this.x,this.y-200,50,50);
-        gameArea.context.fillRect(this.x,this.y,this.width,this.height);
+        if(!(this.flag)) {
+            gameArea.context.drawImage(img2,384,16,16,16,this.x,this.y-200,50,50);
+        }
+        //gameArea.context.fillRect(this.x,this.y,this.width,this.height);
+        gameArea.context.drawImage(img2,0,128,32,32,this.x,this.y,this.width,this.height);
     }
 }
 
@@ -58,6 +60,7 @@ var gameArea = {
         this.context=this.canvas.getContext("2d");
         this.frame=0;
         this.interval = setInterval(this.updateGameArea, 5);
+        document.getElementById('game_sound').play();
     },
 
     updateGameArea : function() {
@@ -74,14 +77,45 @@ var gameArea = {
             score++;
             gameArea.context.font="30px Lobster";
             gameArea.context.fillStyle="green";
-            gameArea.context.fillText("Score :",1150,50);
-            gameArea.context.fillText(Math.floor(score/10),1250,50);
-            myObstacles[i].x -= 1;
+            gameArea.context.fillText("Score =",1150,50);
+            gameArea.context.fillText(Math.floor(score/100),1250,50);
+            if(score<20000) {
+                myObstacles[i].x -= 1;
+            }
+            else if(score >=20000 && score<60000) {
+                myObstacles[i].x -= 2;
+                if(m==true){
+                    document.getElementById('mariolevelup').play();
+                    m=false;
+                }
+            }
+            else {
+                myObstacles[i].x -= 3;
+                if(z==true){
+                    document.getElementById('mariolevelup').play();
+                    z=false;
+                }
+            }
             myObstacles[i].draw();
             if (crashWith(myObstacles[i])) {
                 gameArea.stop();
+                document.getElementById('game_sound').pause();
+                document.getElementById('mariodie').play();
                 return;
             }
+            if(flag) {
+                myObstacles[i].flag = true;
+                d++;
+                if(d === 1) {
+                    e=i;
+                    scoreCoins++;
+                }
+            }
+            if(!flag && e===i) {
+                d=0;
+            }
+            gameArea.context.fillText("Coins =",1150,100);
+            gameArea.context.fillText(scoreCoins,1250,100);
         }
         img = new Image();
         img.src="../images/mario.gif";
@@ -91,13 +125,8 @@ var gameArea = {
         for(i=0; i<1350; i=i+50) {
             gameArea.context.drawImage(img1,0,0,16,16,i,585,50,50);
         }
-        
         gameArea.frame ++;
     },
-    // function bkmove(){
-    //     background.style.backgroundPosition=xpos+'px';
-    //     xpos-=1;
-    // }
 
     keyListener : function(event) {
         // console.log("keylistener");
@@ -142,25 +171,24 @@ var gameArea = {
         gameArea.context.font="100px Georgia";
         gameArea.context.fillStyle="red";
         gameArea.context.fillText("GAME OVER!!",350,317);
-        // gameArea.context.font="30px Lobster";
+        // gameArea.context.font="30px Georgia";
     },
 
     loop : function() {
         // console.log("loop");
         
         if (gameArea.up && jumping == false) {
-    
             y_velocity -= 30;
             jumping = true;
+            document.getElementById('audiojump').play();
         }
         if (gameArea.up2 && jumping == false) {
-    
             y_velocity -= 50;
             jumping = true;
+            document.getElementById('audiojump').play();
         }
         if(x>=30){  
             if (gameArea.left) {
-            
                     x_velocity -= 0.5;
             }
         }
@@ -188,7 +216,7 @@ window.addEventListener("keydown", gameArea.keyListener)
 window.addEventListener("keyup", gameArea.keyListener);
 window.requestAnimationFrame(gameArea.loop);
 
-crashWith = function(otherobj) {
+function crashWith(otherobj) {
     var myleft = x+25;
     var myright = x + 75;
     var mytop = y;
@@ -198,8 +226,12 @@ crashWith = function(otherobj) {
     var othertop = otherobj.y;
     var otherbottom = otherobj.y + (otherobj.height);
     var crash = true;
-    if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+    flag = true;
+    if ((mybottom < othertop) || (myright < otherleft) || (myleft > otherright)) {
         crash = false;
+    }
+    if((myleft > otherright) || (mytop > otherbottom - (otherobj.height + 200)) || (myright < otherleft) || (mybottom < othertop - 250)) {
+        flag=false;
     }
     return crash;
 }
