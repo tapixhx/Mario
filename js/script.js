@@ -18,7 +18,13 @@ var myObstacles=[];
 
 function startGame() {
     gameArea.start();
-}       
+}
+
+document.addEventListener('keyup', function(evt){
+    console.log('reload');
+  if(evt.keyCode == 32)
+    window.location.reload();
+})       
 
 function everyinterval(n) {
     if(gameArea.frame == n)
@@ -33,19 +39,19 @@ function RandomGap() {
 
 //for creating walls and coins
 function obstacle() {
-    this.height = Math.floor(minHeight + Math.random()*(maxHeight-minHeight));
-    this.width = Math.floor(minWidth + Math.random()*(maxWidth-minWidth));
+    this.height = Math.floor(minHeight + Math.random()*(maxHeight-minHeight));//random height to obstacle
+    this.width = Math.floor(minWidth + Math.random()*(maxWidth-minWidth));//random weight to obstacle
     this.x=1350;
-    this.y=gameArea.canvas.height - this.height;
+    this.y=gameArea.canvas.height - this.height;//set x and y coordinate of obstacle
     this.draw = function() {
-        gameArea.context.fillStyle = "green";
+        // gameArea.context.fillStyle = "green";
         img2 = new Image();
-        img2.src="../images/tile.png"
+        img2.src="../images/tile.png"//big img
         if(!(this.flag)) {
-            gameArea.context.drawImage(img2,384,16,16,16,this.x,this.y-200,50,50);
+            gameArea.context.drawImage(img2,384,16,16,16,this.x,this.y-200,50,50);//16*16 png img extract coin
         }
         //gameArea.context.fillRect(this.x,this.y,this.width,this.height);
-        gameArea.context.drawImage(img2,0,128,32,32,this.x,this.y,this.width,this.height);
+        gameArea.context.drawImage(img2,0,128,32,32,this.x,this.y,this.width,this.height);//extract tunnel
     }
 }
 
@@ -66,13 +72,13 @@ var gameArea = {
     updateGameArea : function() {
         gameArea.clear();
         if(everyinterval(gap)) {
-            myObstacles.push(new obstacle());
+            myObstacles.push(new obstacle());//obstacle stored in array myobstacles
             gap = RandomGap();
             gameArea.frame=0;
         }
         background = new Image();
         background.src="../images/background1.png";
-        gameArea.context.drawImage(background,0,0);
+        gameArea.context.drawImage(background,0,0);//background image
         for(i=0; i<myObstacles.length; i++) {
             score++;
             gameArea.context.font="30px Lobster";
@@ -80,17 +86,17 @@ var gameArea = {
             gameArea.context.fillText("Score =",1150,50);
             gameArea.context.fillText(Math.floor(score/100),1250,50);
             if(score<20000) {
-                myObstacles[i].x -= 1;
+                myObstacles[i].x -= 1;//speed
             }
             else if(score >=20000 && score<60000) {
-                myObstacles[i].x -= 2;
+                myObstacles[i].x -= 2;//speed
                 if(m==true){
                     document.getElementById('mariolevelup').play();
                     m=false;
                 }
             }
             else {
-                myObstacles[i].x -= 3;
+                myObstacles[i].x -= 3;//speed
                 if(z==true){
                     document.getElementById('mariolevelup').play();
                     z=false;
@@ -197,6 +203,7 @@ var gameArea = {
                 x_velocity += 0.5;
             }
         }
+    
         y_velocity += 1.5;// gravity
         x += x_velocity;
         y += y_velocity;
