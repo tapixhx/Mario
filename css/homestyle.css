@@ -5,9 +5,7 @@
 .home{
 	height:100vh;
 	width: 100%;
-	/*background-image: url('../image/bkimg2.jpg');*/
 	background-size:cover;
-	/*background-repeat: no-repeat;*/
 	animation:bgimg 10s infinite alternate;
 }
 .heading{
@@ -17,7 +15,7 @@
 	position:absolute;
 	top:10px;
 	left:50px;
-	animation:visible 10s;
+	animation:visible 8s;
 }
 .button img{
 	height:13em;
@@ -33,11 +31,9 @@
 	font-size:80px;
 	margin-left:2em;
 	color:red;
-	/*animation:text 10s infinite alternate;*/
 }
 .control{
 	width:70px;
-	/*border:2px solid white;*/
 	margin-left:12.5em;
 }
 .images img{
