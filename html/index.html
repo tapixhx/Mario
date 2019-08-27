@@ -10,9 +10,18 @@
 </head>
 
 <body onload="startGame()">
+    <audio id="game_sound" loop>
+            <source src="../audio/marioTune.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audiojump">
+            <source src="../audio/Mario-jump.mp3" type="audio/mpeg">
+    </audio>
 
-    <audio autoplay>
-            <source src="../marioTune.mp3" type="audio/mpeg">
+    <audio id="mariodie">
+        <source src="../audio/mariodie.wav" type="audio/wav">
+    </audio>
+    <audio id="mariolevelup">
+        <source src="../audio/mariolevelup.wav" type="audio/wav">
     </audio>
 
     <canvas id="screen" width="1350" height="635">
